@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ArrowRight, Globe, Shield, Clock, CircleCheck as CheckCircle } from 'lucide-react-native';
+import { useTheme } from '@/contexts/ThemeContext';
 import { ConsentForm } from '@/components/ConsentForm';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { SurveyQuestion } from '@/components/SurveyQuestion';
 import { ProgressIndicator } from '@/components/ProgressIndicator';
 
 export default function SurveyScreen() {
+  const { colors } = useTheme();
   const [currentStep, setCurrentStep] = useState<'consent' | 'language' | 'survey' | 'complete'>('consent');
   const [selectedLanguage, setSelectedLanguage] = useState('');
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -66,22 +68,22 @@ export default function SurveyScreen() {
   const progress = currentStep === 'survey' ? (currentQuestion + 1) / surveyQuestions.length : 0;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>MoSPI Survey</Text>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>MoSPI Survey</Text>
         <View style={styles.headerInfo}>
           <View style={styles.infoItem}>
-            <Clock size={16} color="#6b7280" />
-            <Text style={styles.infoText}>~5 min</Text>
+            <Clock size={16} color={colors.textSecondary} />
+            <Text style={[styles.infoText, { color: colors.textSecondary }]}>~5 min</Text>
           </View>
           <View style={styles.infoItem}>
-            <Globe size={16} color="#6b7280" />
-            <Text style={styles.infoText}>{selectedLanguage || 'Multi-lingual'}</Text>
+            <Globe size={16} color={colors.textSecondary} />
+            <Text style={[styles.infoText, { color: colors.textSecondary }]}>{selectedLanguage || 'Multi-lingual'}</Text>
           </View>
           <View style={styles.infoItem}>
-            <Shield size={16} color="#059669" />
-            <Text style={styles.infoText}>Secure</Text>
+            <Shield size={16} color={colors.success} />
+            <Text style={[styles.infoText, { color: colors.textSecondary }]}>Secure</Text>
           </View>
         </View>
       </View>
@@ -116,16 +118,18 @@ export default function SurveyScreen() {
             <View style={styles.navigationButtons}>
               <TouchableOpacity
                 style={[styles.navButton, styles.prevButton]}
+                style={[styles.navButton, styles.prevButton, { backgroundColor: colors.surface, borderColor: colors.border }]}
                 onPress={handlePrevious}
                 disabled={currentQuestion === 0}
               >
                 <Text style={[styles.navButtonText, currentQuestion === 0 && styles.disabledText]}>
+                <Text style={[styles.navButtonText, { color: colors.text }, currentQuestion === 0 && { color: colors.textSecondary }]}>
                   Previous
                 </Text>
               </TouchableOpacity>
               
               <TouchableOpacity
-                style={[styles.navButton, styles.nextButton]}
+                style={[styles.navButton, styles.nextButton, { backgroundColor: colors.primary }]}
                 onPress={handleNext}
               >
                 <Text style={styles.nextButtonText}>
@@ -139,14 +143,14 @@ export default function SurveyScreen() {
         
         {currentStep === 'complete' && (
           <View style={styles.completeScreen}>
-            <CheckCircle size={64} color="#059669" />
-            <Text style={styles.completeTitle}>Survey Completed!</Text>
-            <Text style={styles.completeMessage}>
+            <CheckCircle size={64} color={colors.success} />
+            <Text style={[styles.completeTitle, { color: colors.text }]}>Survey Completed!</Text>
+            <Text style={[styles.completeMessage, { color: colors.textSecondary }]}>
               Thank you for participating in this survey. Your responses have been recorded securely 
               and will help improve government services and policy making.
             </Text>
             <TouchableOpacity 
-              style={styles.completeButton}
+              style={[styles.completeButton, { backgroundColor: colors.primary }]}
               onPress={() => {
                 setCurrentStep('consent');
                 setCurrentQuestion(0);
@@ -166,7 +170,6 @@ export default function SurveyScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
   },
   header: {
     padding: 20,
@@ -175,7 +178,6 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 24,
     fontWeight: '700',
-    color: '#1f2937',
     marginBottom: 12,
   },
   headerInfo: {
@@ -189,7 +191,6 @@ const styles = StyleSheet.create({
   },
   infoText: {
     fontSize: 12,
-    color: '#6b7280',
     fontWeight: '500',
   },
   content: {
@@ -214,22 +215,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   prevButton: {
-    backgroundColor: '#ffffff',
     borderWidth: 1,
-    borderColor: '#e5e7eb',
   },
   nextButton: {
-    backgroundColor: '#1e40af',
     flexDirection: 'row',
     gap: 8,
   },
   navButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#374151',
-  },
-  disabledText: {
-    color: '#9ca3af',
   },
   nextButtonText: {
     fontSize: 16,
@@ -243,19 +237,16 @@ const styles = StyleSheet.create({
   completeTitle: {
     fontSize: 24,
     fontWeight: '700',
-    color: '#1f2937',
     marginTop: 24,
     marginBottom: 16,
   },
   completeMessage: {
     fontSize: 16,
-    color: '#6b7280',
     textAlign: 'center',
     lineHeight: 24,
     marginBottom: 32,
   },
   completeButton: {
-    backgroundColor: '#1e40af',
     paddingVertical: 16,
     paddingHorizontal: 32,
     borderRadius: 12,

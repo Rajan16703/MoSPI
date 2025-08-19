@@ -5,7 +5,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 interface QuickActionCardProps {
   title: string;
   subtitle: string;
-  icon: LucideIcon;
+  icon: typeof LucideIcon;
   color: string;
 }
 

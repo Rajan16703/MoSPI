@@ -5,7 +5,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 interface StatusCardProps {
   title: string;
   value: string;
-  icon: LucideIcon;
+  icon: typeof LucideIcon;
   color: string;
 }
 

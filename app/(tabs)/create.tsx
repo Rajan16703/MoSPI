@@ -77,7 +77,6 @@ export default function CreateScreen() {
               style={[
                 styles.tab,
                 { backgroundColor: colors.surface, borderColor: colors.border },
-                activeTab === tab.id && styles.activeTab,
                 activeTab === tab.id && { backgroundColor: colors.primary + '15', borderColor: colors.primary },
               ]}
               onPress={() => setActiveTab(tab.id as any)}

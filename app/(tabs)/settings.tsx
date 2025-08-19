@@ -17,31 +17,31 @@ export default function SettingsScreen() {
     {
       title: 'Account',
       items: [
-        { icon: User, label: 'Profile Settings', hasArrow: true },
-        { icon: Bell, label: 'Notifications', hasToggle: true, value: notifications, onToggle: setNotifications },
-        { icon: Globe, label: 'Language & Region', subtitle: 'English (India)', hasArrow: true },
+        { icon: User, label: 'Profile Settings', hasArrow: true, hasToggle: false, action: undefined, subtitle: undefined, value: undefined, onToggle: undefined },
+        { icon: Bell, label: 'Notifications', hasToggle: true, value: notifications, onToggle: setNotifications, action: undefined, subtitle: undefined },
+               { icon: Globe, label: 'Language & Region', subtitle: 'English (India)', hasArrow: true, hasToggle: false, action: undefined, value: undefined }
       ]
     },
     {
       title: 'Data & Privacy',
       items: [
-        { icon: Shield, label: 'Privacy Settings', hasArrow: true },
-        { icon: Database, label: 'Data Collection', hasToggle: true, value: dataCollection, onToggle: setDataCollection },
-        { icon: Download, label: 'Export Data', hasArrow: true },
+        { icon: Shield, label: 'Privacy Settings', hasArrow: true, hasToggle: false, action: undefined, subtitle: undefined, value: undefined, onToggle: undefined },
+        { icon: Database, label: 'Data Collection', hasToggle: true, value: dataCollection, onToggle: setDataCollection, action: undefined, subtitle: undefined },
+        { icon: Download, label: 'Export Data', hasArrow: true, hasToggle: false, action: undefined, subtitle: undefined, value: undefined, onToggle: undefined },
       ]
     },
     {
       title: 'App Preferences',
       items: [
-        { icon: Wifi, label: 'Offline Sync', hasToggle: true, value: offlineSync, onToggle: setOfflineSync },
-        { icon: Smartphone, label: 'Device Settings', hasArrow: true },
+        { icon: Wifi, label: 'Offline Sync', hasToggle: true, value: offlineSync, onToggle: setOfflineSync, action: undefined, subtitle: undefined },
+        { icon: Smartphone, label: 'Device Settings', hasArrow: true, hasToggle: false, action: undefined, subtitle: undefined, value: undefined, onToggle: undefined },
       ]
     },
     {
       title: 'Support',
       items: [
-        { icon: HelpCircle, label: 'Help & Support', hasArrow: true },
-        { icon: LogOut, label: 'Sign Out', hasArrow: false, action: signOut },
+        { icon: HelpCircle, label: 'Help & Support', hasArrow: true, hasToggle: false, subtitle: undefined, value: undefined, onToggle: undefined },
+        { icon: LogOut, label: 'Sign Out', hasArrow: false, action: signOut, hasToggle: false, subtitle: undefined, value: undefined, onToggle: undefined },
       ]
     }
   ];
@@ -109,7 +109,7 @@ export default function SettingsScreen() {
                     itemIndex === group.items.length - 1 && styles.lastItem,
                     { borderBottomColor: colors.border }
                   ]}
-                  onPress={item.action}
+                  onPress={item.action ? item.action : undefined}
                 >
                   <View style={styles.settingLeft}>
                     <View style={[styles.settingIcon, { backgroundColor: colors.primary + '15' }]}>

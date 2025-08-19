@@ -1,9 +1,14 @@
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Switch } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { User, Bell, Globe, Shield, Download, CircleHelp as HelpCircle, LogOut, ChevronRight, Smartphone, Database, Wifi } from 'lucide-react-native';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { useState } from 'react';
 
 export default function SettingsScreen() {
+  const { colors } = useTheme();
+  const { user, signOut } = useAuth();
   const [notifications, setNotifications] = useState(true);
   const [offlineSync, setOfflineSync] = useState(true);
   const [dataCollection, setDataCollection] = useState(true);
@@ -12,80 +17,81 @@ export default function SettingsScreen() {
     {
       title: 'Account',
       items: [
-        { icon: User, label: 'Profile Settings', hasArrow: true },
-        { icon: Bell, label: 'Notifications', hasToggle: true, value: notifications, onToggle: setNotifications },
-        { icon: Globe, label: 'Language & Region', subtitle: 'English (India)', hasArrow: true },
+        { icon: User, label: 'Profile Settings', hasArrow: true, hasToggle: false, action: undefined, subtitle: undefined, value: undefined, onToggle: undefined },
+        { icon: Bell, label: 'Notifications', hasToggle: true, value: notifications, onToggle: setNotifications, action: undefined, subtitle: undefined },
+               { icon: Globe, label: 'Language & Region', subtitle: 'English (India)', hasArrow: true, hasToggle: false, action: undefined, value: undefined }
       ]
     },
     {
       title: 'Data & Privacy',
       items: [
-        { icon: Shield, label: 'Privacy Settings', hasArrow: true },
-        { icon: Database, label: 'Data Collection', hasToggle: true, value: dataCollection, onToggle: setDataCollection },
-        { icon: Download, label: 'Export Data', hasArrow: true },
+        { icon: Shield, label: 'Privacy Settings', hasArrow: true, hasToggle: false, action: undefined, subtitle: undefined, value: undefined, onToggle: undefined },
+        { icon: Database, label: 'Data Collection', hasToggle: true, value: dataCollection, onToggle: setDataCollection, action: undefined, subtitle: undefined },
+        { icon: Download, label: 'Export Data', hasArrow: true, hasToggle: false, action: undefined, subtitle: undefined, value: undefined, onToggle: undefined },
       ]
     },
     {
       title: 'App Preferences',
       items: [
-        { icon: Wifi, label: 'Offline Sync', hasToggle: true, value: offlineSync, onToggle: setOfflineSync },
-        { icon: Smartphone, label: 'Device Settings', hasArrow: true },
+        { icon: Wifi, label: 'Offline Sync', hasToggle: true, value: offlineSync, onToggle: setOfflineSync, action: undefined, subtitle: undefined },
+        { icon: Smartphone, label: 'Device Settings', hasArrow: true, hasToggle: false, action: undefined, subtitle: undefined, value: undefined, onToggle: undefined },
       ]
     },
     {
       title: 'Support',
       items: [
-        { icon: HelpCircle, label: 'Help & Support', hasArrow: true },
-        { icon: LogOut, label: 'Sign Out', hasArrow: false },
+        { icon: HelpCircle, label: 'Help & Support', hasArrow: true, hasToggle: false, subtitle: undefined, value: undefined, onToggle: undefined },
+        { icon: LogOut, label: 'Sign Out', hasArrow: false, action: signOut, hasToggle: false, subtitle: undefined, value: undefined, onToggle: undefined },
       ]
     }
   ];
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Settings</Text>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>Settings</Text>
+        <ThemeToggle />
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Profile Header */}
         <View style={styles.profileSection}>
-          <View style={styles.profileCard}>
-            <View style={styles.avatar}>
-              <Text style={styles.avatarText}>AD</Text>
+          <View style={[styles.profileCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+            <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
+              <Text style={styles.avatarText}>{user?.name?.charAt(0) || 'U'}</Text>
             </View>
             <View style={styles.profileInfo}>
-              <Text style={styles.profileName}>Admin User</Text>
-              <Text style={styles.profileRole}>Survey Administrator</Text>
-              <Text style={styles.profileEmail}>admin@mospi.gov.in</Text>
+              <Text style={[styles.profileName, { color: colors.text }]}>{user?.name}</Text>
+              <Text style={[styles.profileRole, { color: colors.primary }]}>{user?.role}</Text>
+              <Text style={[styles.profileEmail, { color: colors.textSecondary }]}>{user?.email}</Text>
             </View>
           </View>
         </View>
 
         {/* App Status */}
         <View style={styles.statusSection}>
-          <Text style={styles.sectionTitle}>App Status</Text>
-          <View style={styles.statusCard}>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>App Status</Text>
+          <View style={[styles.statusCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
             <View style={styles.statusItem}>
               <View style={styles.statusIndicator}>
-                <View style={[styles.statusDot, { backgroundColor: '#10b981' }]} />
-                <Text style={styles.statusText}>Online</Text>
+                <View style={[styles.statusDot, { backgroundColor: colors.success }]} />
+                <Text style={[styles.statusText, { color: colors.text }]}>Online</Text>
               </View>
-              <Text style={styles.statusValue}>Connected</Text>
+              <Text style={[styles.statusValue, { color: colors.textSecondary }]}>Connected</Text>
             </View>
             <View style={styles.statusItem}>
               <View style={styles.statusIndicator}>
-                <View style={[styles.statusDot, { backgroundColor: '#1e40af' }]} />
-                <Text style={styles.statusText}>Sync Status</Text>
+                <View style={[styles.statusDot, { backgroundColor: colors.primary }]} />
+                <Text style={[styles.statusText, { color: colors.text }]}>Sync Status</Text>
               </View>
-              <Text style={styles.statusValue}>Up to date</Text>
+              <Text style={[styles.statusValue, { color: colors.textSecondary }]}>Up to date</Text>
             </View>
             <View style={styles.statusItem}>
               <View style={styles.statusIndicator}>
                 <View style={[styles.statusDot, { backgroundColor: '#7c3aed' }]} />
-                <Text style={styles.statusText}>Storage</Text>
+                <Text style={[styles.statusText, { color: colors.text }]}>Storage</Text>
               </View>
-              <Text style={styles.statusValue}>2.4GB / 5GB</Text>
+              <Text style={[styles.statusValue, { color: colors.textSecondary }]}>2.4GB / 5GB</Text>
             </View>
           </View>
         </View>
@@ -93,24 +99,26 @@ export default function SettingsScreen() {
         {/* Settings Groups */}
         {settingsGroups.map((group, groupIndex) => (
           <View key={groupIndex} style={styles.settingsGroup}>
-            <Text style={styles.sectionTitle}>{group.title}</Text>
-            <View style={styles.settingsCard}>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>{group.title}</Text>
+            <View style={[styles.settingsCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
               {group.items.map((item, itemIndex) => (
                 <TouchableOpacity 
                   key={itemIndex} 
                   style={[
                     styles.settingItem,
-                    itemIndex === group.items.length - 1 && styles.lastItem
+                    itemIndex === group.items.length - 1 && styles.lastItem,
+                    { borderBottomColor: colors.border }
                   ]}
+                  onPress={item.action ? item.action : undefined}
                 >
                   <View style={styles.settingLeft}>
-                    <View style={styles.settingIcon}>
-                      <item.icon size={20} color="#1e40af" />
+                    <View style={[styles.settingIcon, { backgroundColor: colors.primary + '15' }]}>
+                      <item.icon size={20} color={colors.primary} />
                     </View>
                     <View style={styles.settingContent}>
-                      <Text style={styles.settingLabel}>{item.label}</Text>
+                      <Text style={[styles.settingLabel, { color: colors.text }]}>{item.label}</Text>
                       {item.subtitle && (
-                        <Text style={styles.settingSubtitle}>{item.subtitle}</Text>
+                        <Text style={[styles.settingSubtitle, { color: colors.textSecondary }]}>{item.subtitle}</Text>
                       )}
                     </View>
                   </View>
@@ -120,7 +128,7 @@ export default function SettingsScreen() {
                       <Switch
                         value={item.value}
                         onValueChange={item.onToggle}
-                        trackColor={{ false: '#d1d5db', true: '#1e40af' }}
+                        trackColor={{ false: colors.border, true: colors.primary }}
                         thumbColor="#ffffff"
                       />
                     )}
@@ -136,9 +144,9 @@ export default function SettingsScreen() {
 
         {/* App Info */}
         <View style={styles.appInfo}>
-          <Text style={styles.appInfoText}>MoSPI Survey App v1.0.0</Text>
-          <Text style={styles.appInfoText}>Ministry of Statistics & Programme Implementation</Text>
-          <Text style={styles.appInfoText}>Government of India</Text>
+          <Text style={[styles.appInfoText, { color: colors.textSecondary }]}>MoSPI Survey App v1.0.0</Text>
+          <Text style={[styles.appInfoText, { color: colors.textSecondary }]}>Ministry of Statistics & Programme Implementation</Text>
+          <Text style={[styles.appInfoText, { color: colors.textSecondary }]}>Government of India</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -148,27 +156,26 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
   },
   header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     padding: 20,
     paddingBottom: 10,
   },
   headerTitle: {
     fontSize: 24,
     fontWeight: '700',
-    color: '#1f2937',
   },
   profileSection: {
     paddingHorizontal: 20,
     marginBottom: 24,
   },
   profileCard: {
-    backgroundColor: '#ffffff',
     borderRadius: 16,
     padding: 20,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
@@ -181,7 +188,6 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: '#1e40af',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 16,
@@ -197,18 +203,15 @@ const styles = StyleSheet.create({
   profileName: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#1f2937',
     marginBottom: 4,
   },
   profileRole: {
     fontSize: 14,
-    color: '#1e40af',
     fontWeight: '600',
     marginBottom: 2,
   },
   profileEmail: {
     fontSize: 14,
-    color: '#6b7280',
   },
   statusSection: {
     paddingHorizontal: 20,
@@ -217,15 +220,12 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#1f2937',
     marginBottom: 12,
   },
   statusCard: {
-    backgroundColor: '#ffffff',
     borderRadius: 16,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
@@ -250,22 +250,18 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontSize: 14,
-    color: '#374151',
     fontWeight: '500',
   },
   statusValue: {
     fontSize: 14,
-    color: '#6b7280',
   },
   settingsGroup: {
     paddingHorizontal: 20,
     marginBottom: 24,
   },
   settingsCard: {
-    backgroundColor: '#ffffff',
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
@@ -279,7 +275,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#f3f4f6',
   },
   lastItem: {
     borderBottomWidth: 0,
@@ -293,7 +288,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 10,
-    backgroundColor: '#eff6ff',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -304,11 +298,9 @@ const styles = StyleSheet.create({
   settingLabel: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1f2937',
   },
   settingSubtitle: {
     fontSize: 14,
-    color: '#6b7280',
     marginTop: 2,
   },
   settingRight: {
@@ -322,7 +314,6 @@ const styles = StyleSheet.create({
   },
   appInfoText: {
     fontSize: 12,
-    color: '#9ca3af',
     marginBottom: 4,
   },
 });

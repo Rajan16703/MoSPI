@@ -1,7 +1,10 @@
 import { View, Text, StyleSheet } from 'react-native';
 import { Clock, CircleCheck as CheckCircle, TriangleAlert as AlertTriangle, User } from 'lucide-react-native';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export function RecentActivity() {
+  const { colors } = useTheme();
+
   const activities = [
     {
       id: 1,
@@ -9,7 +12,7 @@ export function RecentActivity() {
       message: 'Survey "Urban Planning 2024" completed by 156 respondents',
       time: '2 hours ago',
       icon: CheckCircle,
-      color: '#059669',
+      color: colors.success,
     },
     {
       id: 2,
@@ -17,7 +20,7 @@ export function RecentActivity() {
       message: 'Quality alert: Unusual response pattern detected in Delhi region',
       time: '4 hours ago',
       icon: AlertTriangle,
-      color: '#f59e0b',
+      color: colors.warning,
     },
     {
       id: 3,
@@ -25,22 +28,22 @@ export function RecentActivity() {
       message: 'New enumerator assigned to Karnataka region',
       time: '6 hours ago',
       icon: User,
-      color: '#1e40af',
+      color: colors.primary,
     },
   ];
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.surface, borderColor: colors.border }]}>
       {activities.map((activity) => (
         <View key={activity.id} style={styles.activityItem}>
           <View style={[styles.iconContainer, { backgroundColor: activity.color + '15' }]}>
             <activity.icon size={16} color={activity.color} />
           </View>
           <View style={styles.activityContent}>
-            <Text style={styles.activityMessage}>{activity.message}</Text>
+            <Text style={[styles.activityMessage, { color: colors.text }]}>{activity.message}</Text>
             <View style={styles.timeContainer}>
-              <Clock size={12} color="#9ca3af" />
-              <Text style={styles.activityTime}>{activity.time}</Text>
+              <Clock size={12} color={colors.textSecondary} />
+              <Text style={[styles.activityTime, { color: colors.textSecondary }]}>{activity.time}</Text>
             </View>
           </View>
         </View>
@@ -51,11 +54,9 @@ export function RecentActivity() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#ffffff',
     borderRadius: 16,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
@@ -79,7 +80,6 @@ const styles = StyleSheet.create({
   },
   activityMessage: {
     fontSize: 14,
-    color: '#374151',
     lineHeight: 20,
     marginBottom: 4,
   },
@@ -89,7 +89,6 @@ const styles = StyleSheet.create({
   },
   activityTime: {
     fontSize: 12,
-    color: '#9ca3af',
     marginLeft: 4,
   },
 });

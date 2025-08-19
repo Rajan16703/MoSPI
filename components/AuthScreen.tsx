@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'reac
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { BarChart3, Eye, EyeOff, Mail, Lock, User, Shield } from 'lucide-react-native';
+import { ChartBar as BarChart3, Eye, EyeOff, Mail, Lock, User, Shield } from 'lucide-react-native';
 import Animated, { 
   useSharedValue, 
   useAnimatedStyle, 

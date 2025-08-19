@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TextInput, StyleSheet, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Plus, Wand as Wand2, Library, Save, Eye, Settings2 } from 'lucide-react-native';
+import { useTheme } from '@/contexts/ThemeContext';
 import { SurveyBuilder } from '@/components/SurveyBuilder';
 import { QuestionLibrary } from '@/components/QuestionLibrary';
 import { AIPromptInput } from '@/components/AIPromptInput';
 
 export default function CreateScreen() {
+  const { colors } = useTheme();
   const [activeTab, setActiveTab] = useState<'builder' | 'ai' | 'library'>('builder');
   const [surveyTitle, setSurveyTitle] = useState('');
   const [surveyDescription, setSurveyDescription] = useState('');
@@ -26,14 +28,14 @@ export default function CreateScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Create Survey</Text>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>Create Survey</Text>
         <View style={styles.headerActions}>
-          <TouchableOpacity style={styles.headerButton} onPress={handlePreviewSurvey}>
-            <Eye size={20} color="#6b7280" />
+          <TouchableOpacity style={[styles.headerButton, { backgroundColor: colors.surface, borderColor: colors.border }]} onPress={handlePreviewSurvey}>
+            <Eye size={20} color={colors.textSecondary} />
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.headerButton, styles.saveButton]} onPress={handleSaveSurvey}>
+          <TouchableOpacity style={[styles.headerButton, styles.saveButton, { backgroundColor: colors.primary }]} onPress={handleSaveSurvey}>
             <Save size={20} color="#ffffff" />
           </TouchableOpacity>
         </View>
@@ -42,27 +44,27 @@ export default function CreateScreen() {
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Survey Basic Info */}
         <View style={styles.basicInfo}>
-          <Text style={styles.sectionTitle}>Survey Information</Text>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>Survey Information</Text>
           <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>Survey Title</Text>
+            <Text style={[styles.inputLabel, { color: colors.text }]}>Survey Title</Text>
             <TextInput
-              style={styles.textInput}
+              style={[styles.textInput, { backgroundColor: colors.surface, borderColor: colors.border, color: colors.text }]}
               placeholder="Enter survey title..."
               value={surveyTitle}
               onChangeText={setSurveyTitle}
-              placeholderTextColor="#9ca3af"
+              placeholderTextColor={colors.textSecondary}
             />
           </View>
           <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>Description</Text>
+            <Text style={[styles.inputLabel, { color: colors.text }]}>Description</Text>
             <TextInput
-              style={[styles.textInput, styles.textArea]}
+              style={[styles.textInput, styles.textArea, { backgroundColor: colors.surface, borderColor: colors.border, color: colors.text }]}
               placeholder="Enter survey description..."
               value={surveyDescription}
               onChangeText={setSurveyDescription}
               multiline
               numberOfLines={3}
-              placeholderTextColor="#9ca3af"
+              placeholderTextColor={colors.textSecondary}
             />
           </View>
         </View>
@@ -74,17 +76,20 @@ export default function CreateScreen() {
               key={tab.id}
               style={[
                 styles.tab,
+                { backgroundColor: colors.surface, borderColor: colors.border },
                 activeTab === tab.id && styles.activeTab,
+                activeTab === tab.id && { backgroundColor: colors.primary + '15', borderColor: colors.primary },
               ]}
               onPress={() => setActiveTab(tab.id as any)}
             >
               <tab.icon 
                 size={20} 
-                color={activeTab === tab.id ? '#1e40af' : '#6b7280'} 
+                color={activeTab === tab.id ? colors.primary : colors.textSecondary} 
               />
               <Text style={[
                 styles.tabText,
-                activeTab === tab.id && styles.activeTabText,
+                { color: colors.textSecondary },
+                activeTab === tab.id && { color: colors.primary },
               ]}>
                 {tab.title}
               </Text>
@@ -106,7 +111,6 @@ export default function CreateScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
   },
   header: {
     flexDirection: 'row',
@@ -118,7 +122,6 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 24,
     fontWeight: '700',
-    color: '#1f2937',
   },
   headerActions: {
     flexDirection: 'row',
@@ -128,15 +131,12 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 12,
-    backgroundColor: '#ffffff',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#e5e7eb',
   },
   saveButton: {
-    backgroundColor: '#1e40af',
-    borderColor: '#1e40af',
+    borderWidth: 0,
   },
   basicInfo: {
     paddingHorizontal: 20,
@@ -145,7 +145,6 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#1f2937',
     marginBottom: 16,
   },
   inputGroup: {
@@ -154,18 +153,14 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#374151',
     marginBottom: 8,
   },
   textInput: {
-    backgroundColor: '#ffffff',
     borderWidth: 1,
-    borderColor: '#d1d5db',
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 12,
     fontSize: 16,
-    color: '#1f2937',
   },
   textArea: {
     height: 80,
@@ -184,23 +179,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 12,
     paddingHorizontal: 16,
-    backgroundColor: '#ffffff',
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
     gap: 8,
-  },
-  activeTab: {
-    backgroundColor: '#eff6ff',
-    borderColor: '#1e40af',
   },
   tabText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#6b7280',
-  },
-  activeTabText: {
-    color: '#1e40af',
   },
   tabContent: {
     paddingHorizontal: 20,

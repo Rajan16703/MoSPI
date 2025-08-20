@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { Shield, Eye, Database, Clock, CircleCheck as CheckCircle } from 'lucide-react-native';
+import { useParadata } from '@/contexts/ParadataContext';
 
 interface ConsentFormProps {
   onComplete: () => void;
 }
 
 export function ConsentForm({ onComplete }: ConsentFormProps) {
+  const { recordConsent } = useParadata();
   const [consents, setConsents] = useState({
     dataCollection: false,
     dataSharing: false,
@@ -103,7 +105,11 @@ export function ConsentForm({ onComplete }: ConsentFormProps) {
 
       <TouchableOpacity
         style={[styles.proceedButton, !allConsentsGiven && styles.disabledButton]}
-        onPress={onComplete}
+        onPress={() => {
+          const payload = JSON.stringify(consents);
+            recordConsent(payload);
+            onComplete();
+        }}
         disabled={!allConsentsGiven}
       >
         <Text style={[styles.proceedButtonText, !allConsentsGiven && styles.disabledButtonText]}>

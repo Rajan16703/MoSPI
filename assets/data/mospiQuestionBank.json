@@ -1,0 +1,174 @@
+[
+  {
+    "id": "plfs_emp_status",
+    "surveyId": "plfs",
+    "domain": "employment",
+    "title": "Current weekly employment status",
+    "type": "radio",
+    "options": ["Employed", "Unemployed seeking work", "Not in labour force"],
+    "required": true,
+    "reference": "PLFS Section 3",
+    "officialSourceUrl": "https://mospi.gov.in/"
+  },
+  {
+    "id": "plfs_primary_activity",
+    "surveyId": "plfs",
+    "domain": "employment",
+    "title": "Primary activity during the last 7 days",
+    "type": "radio",
+    "options": ["Wage/salaried", "Self-employed", "Casual labour", "Unpaid household worker", "Other"],
+    "required": true,
+    "reference": "PLFS Section 3",
+    "officialSourceUrl": "https://mospi.gov.in/"
+  },
+  {
+    "id": "plfs_hours_worked",
+    "surveyId": "plfs",
+    "domain": "employment",
+    "title": "Total hours worked in the last 7 days",
+    "type": "text",
+    "required": false,
+    "reference": "PLFS Derived",
+    "officialSourceUrl": "https://mospi.gov.in/"
+  },
+  {
+    "id": "consumption_cereal_freq",
+    "surveyId": "cms",
+    "domain": "consumption",
+    "title": "Frequency of cereal consumption in the last 30 days",
+    "type": "radio",
+    "options": ["Daily", "5-6 days/week", "2-4 days/week", "Rarely", "Never"],
+    "required": true,
+    "reference": "CMS Food Module",
+    "officialSourceUrl": "https://mospi.gov.in/"
+  },
+  {
+    "id": "consumption_milk_qty",
+    "surveyId": "cms",
+    "domain": "consumption",
+    "title": "Approximate quantity of milk consumed per week (litres)",
+    "type": "text",
+    "required": false,
+    "reference": "CMS Food Module",
+    "officialSourceUrl": "https://mospi.gov.in/"
+  },
+  {
+    "id": "health_any_ailment",
+    "surveyId": "cms",
+    "domain": "health",
+    "title": "Any reported ailment in the last 15 days",
+    "type": "radio",
+    "options": ["Yes", "No"],
+    "required": true,
+    "reference": "CMS Health Module",
+    "officialSourceUrl": "https://mospi.gov.in/"
+  },
+  {
+    "id": "health_ailment_type",
+    "surveyId": "cms",
+    "domain": "health",
+    "title": "Type of main ailment (if any)",
+    "type": "multiple_choice",
+    "options": ["Fever", "Respiratory", "Injury", "Digestive", "Other"],
+    "required": false,
+    "reference": "CMS Health Module",
+    "officialSourceUrl": "https://mospi.gov.in/"
+  },
+  {
+    "id": "education_highest_level",
+    "surveyId": "cms",
+    "domain": "education",
+    "title": "Highest level of education completed",
+    "type": "radio",
+    "options": ["No schooling", "Primary", "Upper Primary", "Secondary", "Higher Secondary", "Graduate+"],
+    "required": true,
+    "reference": "CMS Education Module",
+    "officialSourceUrl": "https://mospi.gov.in/"
+  },
+  {
+    "id": "education_current_enrol",
+    "surveyId": "cms",
+    "domain": "education",
+    "title": "Currently enrolled in any educational institution",
+    "type": "radio",
+    "options": ["Yes", "No"],
+    "required": true,
+    "reference": "CMS Education Module",
+    "officialSourceUrl": "https://mospi.gov.in/"
+  },
+  {
+    "id": "transport_mode_commute",
+    "surveyId": "cms",
+    "domain": "transport",
+    "title": "Primary mode of daily commute",
+    "type": "radio",
+    "options": ["Bus", "Train/Metro", "Two-wheeler", "Car", "Cycle", "Walk", "Other"],
+    "required": true,
+    "reference": "Derived Transport Module",
+    "officialSourceUrl": "https://mospi.gov.in/"
+  },
+  {
+    "id": "transport_commute_time",
+    "surveyId": "cms",
+    "domain": "transport",
+    "title": "Average one-way commute time (minutes)",
+    "type": "text",
+    "required": false,
+    "reference": "Derived Transport Module",
+    "officialSourceUrl": "https://mospi.gov.in/"
+  },
+  {
+    "id": "prices_food_increase",
+    "surveyId": "cpi-food",
+    "domain": "prices",
+    "title": "Perception of food price change over last 3 months",
+    "type": "radio",
+    "options": ["Increased", "Decreased", "No change"],
+    "required": false,
+    "reference": "Perception Proxy",
+    "officialSourceUrl": "https://mospi.gov.in/"
+  },
+  {
+    "id": "prices_inflation_concern",
+    "surveyId": "cpi-food",
+    "domain": "prices",
+    "title": "Level of concern about rising household food expenses",
+    "type": "radio",
+    "options": ["High", "Moderate", "Low", "None"],
+    "required": false,
+    "reference": "Perception Proxy",
+    "officialSourceUrl": "https://mospi.gov.in/"
+  },
+  {
+    "id": "enterprise_employment_size",
+    "surveyId": "economic-census",
+    "domain": "enterprise",
+    "title": "Total persons engaged in the enterprise",
+    "type": "radio",
+    "options": ["1", "2-5", "6-9", "10-19", "20-49", "50+"],
+    "required": true,
+    "reference": "Economic Census Core",
+    "officialSourceUrl": "https://mospi.gov.in/"
+  },
+  {
+    "id": "enterprise_ownership_type",
+    "surveyId": "economic-census",
+    "domain": "enterprise",
+    "title": "Ownership type of the enterprise",
+    "type": "radio",
+    "options": ["Proprietary", "Partnership", "Company", "Cooperative", "Other"],
+    "required": true,
+    "reference": "Economic Census Core",
+    "officialSourceUrl": "https://mospi.gov.in/"
+  },
+  {
+    "id": "enterprise_activity_desc",
+    "surveyId": "economic-census",
+    "domain": "enterprise",
+    "title": "Principal economic activity (brief description)",
+    "type": "text",
+    "required": true,
+    "reference": "Economic Census Core",
+    "officialSourceUrl": "https://mospi.gov.in/"
+  }
+]

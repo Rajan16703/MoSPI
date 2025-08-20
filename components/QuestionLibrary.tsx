@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { View, Text, TouchableOpacity, TextInput, StyleSheet, Alert } from 'react-native';
 import { Search, Plus, Tag, Filter } from 'lucide-react-native';
 
@@ -8,49 +8,36 @@ interface LibraryQuestion {
   type: string;
   category: string;
   options?: string[];
-  used: number;
+  used?: number;
+  description?: string;
+  source?: string;
 }
+import { useMospiSurveys } from '@/hooks/useMospiSurveys';
 
 export function QuestionLibrary() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
 
-  const categories = ['All', 'Demographics', 'Income', 'Housing', 'Education', 'Health', 'Employment'];
+  const { data: surveyMeta, loading } = useMospiSurveys();
 
-  const libraryQuestions: LibraryQuestion[] = [
-    {
-      id: '1',
-      title: 'What is your age group?',
-      type: 'Radio',
-      category: 'Demographics',
-      options: ['18-25', '26-35', '36-45', '46-55', '55+'],
-      used: 1247,
-    },
-    {
-      id: '2',
-      title: 'What is your monthly household income?',
-      type: 'Radio',
-      category: 'Income',
-      options: ['Below ₹25,000', '₹25,000-₹50,000', '₹50,000-₹1,00,000', 'Above ₹1,00,000'],
-      used: 892,
-    },
-    {
-      id: '3',
-      title: 'What type of dwelling do you live in?',
-      type: 'Radio',
-      category: 'Housing',
-      options: ['Independent House', 'Apartment', 'Slum', 'Other'],
-      used: 654,
-    },
-    {
-      id: '4',
-      title: 'What is your highest level of education?',
-      type: 'Radio',
-      category: 'Education',
-      options: ['Primary', 'Secondary', 'Graduate', 'Post-graduate', 'Professional'],
-      used: 543,
-    },
-  ];
+  const categories = useMemo(() => {
+    const base = new Set<string>(['All']);
+    surveyMeta.forEach(s => base.add(s.category));
+    return Array.from(base);
+  }, [surveyMeta]);
+
+  // Convert survey meta into pseudo-questions (representative root entries)
+  const libraryQuestions: LibraryQuestion[] = useMemo(() => {
+    if (!surveyMeta.length) return [];
+    return surveyMeta.map(m => ({
+      id: m.id,
+      title: m.title,
+      type: m.frequency ? m.frequency : (m.lastKnownCycle ? 'Periodic' : 'Static'),
+      category: m.category,
+      description: m.description,
+      source: m.officialUrl
+    }));
+  }, [surveyMeta]);
 
   const filteredQuestions = libraryQuestions.filter(question => {
     const matchesSearch = question.title.toLowerCase().includes(searchQuery.toLowerCase());
@@ -59,14 +46,18 @@ export function QuestionLibrary() {
   });
 
   const addToSurvey = (question: LibraryQuestion) => {
-    Alert.alert('Added', `"${question.title}" added to your survey!`);
+    if (question.source) {
+      Alert.alert('Reference', `${question.title} is a MoSPI dataset reference. Use it to design domain-specific questions.`);
+    } else {
+      Alert.alert('Added', `"${question.title}" added to your survey!`);
+    }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Question Library</Text>
       <Text style={styles.description}>
-        Browse and add pre-approved questions from our standardized library.
+        {loading ? 'Loading MoSPI survey metadata...' : 'Browse MoSPI statistical survey & dataset references to base your questions on.'}
       </Text>
 
       {/* Search */}
@@ -112,7 +103,7 @@ export function QuestionLibrary() {
                 <View style={styles.questionMeta}>
                   <Tag size={12} color="#9ca3af" />
                   <Text style={styles.questionCategory}>{question.category}</Text>
-                  <Text style={styles.questionUsage}>Used {question.used} times</Text>
+                  {question.used && <Text style={styles.questionUsage}>Used {question.used} times</Text>}
                 </View>
               </View>
               <TouchableOpacity
@@ -125,8 +116,8 @@ export function QuestionLibrary() {
             
             <View style={styles.questionType}>
               <Text style={styles.typeLabel}>{question.type}</Text>
-              {question.options && (
-                <Text style={styles.optionsCount}>{question.options.length} options</Text>
+              {question.description && (
+                <Text style={styles.optionsCount}>{question.description.slice(0, 80)}{question.description.length > 80 ? '…' : ''}</Text>
               )}
             </View>
           </View>

@@ -1,24 +1,56 @@
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Linking, ActivityIndicator, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ChartBar as BarChart3, TrendingUp, Users, TriangleAlert as AlertTriangle, Download, Filter, MapPin } from 'lucide-react-native';
+import { ChartBar as BarChart3, TrendingUp, Users, TriangleAlert as AlertTriangle, Download, Filter, MapPin, ExternalLink } from 'lucide-react-native';
 import { useTheme } from '@/contexts/ThemeContext';
 import { AnalyticsCard } from '@/components/AnalyticsCard';
 import { ResponseChart } from '@/components/ResponseChart';
 import { QualityIndicators } from '@/components/QualityIndicators';
+import { useMospiReports } from '@/hooks/useMospiReports';
+import { useResponses } from '@/contexts/ResponseContext';
+import { useParadata } from '@/contexts/ParadataContext';
+import { useSurvey } from '@/contexts/SurveyContext';
+import { useOCR } from '@/contexts/OCRContext';
+import { useSummarization } from '@/contexts/SummarizationContext';
+import { useBiometric } from '@/contexts/BiometricContext';
 
 export default function AnalyticsScreen() {
   const { colors } = useTheme();
+  const maxWidth = 1100; const pad = 20; const screenWidth = Dimensions.get('window').width; const centerW = { width: Math.min(screenWidth - pad*2, maxWidth) };
+  const { reports, loading: reportsLoading, error: reportsError, fetchedAt } = useMospiReports();
+  const { ordered } = useResponses();
+  const { summary: paradata } = useParadata();
+  const { questions } = useSurvey();
+  const { pickAndScan } = useOCR();
+  const { summarize, summaries, loading: summarizing } = useSummarization();
+  const { session, verify } = useBiometric();
 
-  const metrics = [
-    { title: 'Total Responses', value: '2,847', change: '+12%', trend: 'up', color: colors.primary },
-    { title: 'Response Rate', value: '87%', change: '+5%', trend: 'up', color: colors.success },
-    { title: 'Avg. Completion Time', value: '7.2m', change: '-8%', trend: 'down', color: '#7c3aed' },
-    { title: 'Quality Score', value: '94%', change: '+2%', trend: 'up', color: colors.warning },
+  // Derive real metrics
+  const totalResponses = ordered.length;
+  const uniqueQuestionsAnswered = new Set(ordered.map(r => r.questionId)).size;
+  const responseRate = questions.length ? (uniqueQuestionsAnswered / questions.length) : 0;
+  const avgDurationMs = paradata.records.length
+    ? Math.round(paradata.records.filter(r=>r.durationMs).reduce((a,r)=>a+(r.durationMs||0),0) / paradata.records.length)
+    : 0;
+  const avgSeconds = avgDurationMs / 1000;
+  const completionMinutes = paradata.totalDurationMs ? (paradata.totalDurationMs/60000).toFixed(1) : (avgSeconds/60).toFixed(1);
+  const qualityFast = paradata.quality.fast;
+  const qualityFlagged = paradata.quality.flagged;
+  const answeredToday = ordered.filter(r => Date.now() - r.answeredAt < 86400000).length;
+  const answeredYesterday = ordered.filter(r => {
+    const diff = Date.now() - r.answeredAt; return diff >= 86400000 && diff < 2*86400000; }).length;
+  const dayChange = answeredYesterday ? ((answeredToday - answeredYesterday)/answeredYesterday) : (answeredToday?1:0);
+  const changePct = (v:number)=> (v>0?'+':'') + Math.round(v*100) + '%';
+  const metrics: { title: string; value: string; change: string; trend: 'up' | 'down'; color: string; }[] = [
+    { title: 'Questions Answered', value: String(totalResponses), change: changePct(dayChange), trend: dayChange>=0?'up':'down', color: colors.primary },
+    { title: 'Response Rate', value: questions.length? Math.round(responseRate*100)+'%':'—', change: '', trend: 'up', color: colors.success },
+    { title: 'Avg. Q Time', value: avgSeconds? (avgSeconds.toFixed(1)+'s'):'—', change: '', trend: 'down', color: '#7c3aed' },
+    { title: 'Fast / Flagged', value: qualityFast + ' / ' + qualityFlagged, change: '', trend: 'up', color: colors.warning },
   ];
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-      <View style={styles.header}>
+      <View style={[styles.header, { justifyContent: 'center' }]}>
+        <View style={[styles.headerInner, centerW]}> 
         <Text style={[styles.headerTitle, { color: colors.text }]}>Analytics Dashboard</Text>
         <View style={styles.headerActions}>
           <TouchableOpacity style={[styles.headerButton, { backgroundColor: colors.surface, borderColor: colors.border }]}>
@@ -28,30 +60,43 @@ export default function AnalyticsScreen() {
             <Download size={20} color={colors.textSecondary} />
           </TouchableOpacity>
         </View>
+        </View>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ alignItems: 'center', paddingBottom: 80 }}>
+        {/* Feature Actions */}
+        <View style={[centerW, { flexDirection: 'row', flexWrap: 'wrap', gap: 12, paddingHorizontal: 20, marginTop: 8 }]}> 
+          <TouchableOpacity onPress={pickAndScan} style={[styles.headerButton,{ backgroundColor: colors.surface, borderColor: colors.border, width: 120 }]}> 
+            <Text style={{ fontSize:11, color: colors.textSecondary, fontWeight:'600', textAlign:'center' }}>OCR Scan</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => verify('face')} style={[styles.headerButton,{ backgroundColor: session? colors.success: colors.surface, borderColor: colors.border, width: 140 }]}> 
+            <Text style={{ fontSize:11, color: session? '#000': colors.textSecondary, fontWeight:'600', textAlign:'center' }}>{session? 'Verified':'Biometric Verify'}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity disabled={summarizing} onPress={summarize} style={[styles.headerButton,{ backgroundColor: summarizing? colors.border: colors.surface, borderColor: colors.border, width: 140 }]}> 
+            <Text style={{ fontSize:11, color: colors.textSecondary, fontWeight:'600', textAlign:'center' }}>{ summarizing? 'Summarizing...':'AI Summarize'}</Text>
+          </TouchableOpacity>
+        </View>
         {/* Key Metrics */}
-        <View style={styles.metricsGrid}>
+        <View style={[styles.metricsGrid, centerW, { backgroundColor: 'transparent' }]}>
           {metrics.map((metric, index) => (
             <AnalyticsCard key={index} {...metric} />
           ))}
         </View>
 
         {/* Response Chart */}
-        <View style={styles.section}>
+        <View style={[styles.section, centerW] }>
           <Text style={[styles.sectionTitle, { color: colors.text }]}>Response Trends</Text>
           <ResponseChart />
         </View>
 
         {/* Quality Indicators */}
-        <View style={styles.section}>
+  <View style={[styles.section, centerW]}>
           <Text style={[styles.sectionTitle, { color: colors.text }]}>Data Quality</Text>
           <QualityIndicators />
         </View>
 
         {/* Geographic Distribution */}
-        <View style={styles.section}>
+  <View style={[styles.section, centerW]}>
           <Text style={[styles.sectionTitle, { color: colors.text }]}>Geographic Distribution</Text>
           <View style={[styles.geoCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
             <View style={styles.geoHeader}>
@@ -80,7 +125,7 @@ export default function AnalyticsScreen() {
         </View>
 
         {/* AI Insights */}
-        <View style={styles.section}>
+  <View style={[styles.section, centerW]}>
           <Text style={[styles.sectionTitle, { color: colors.text }]}>AI Insights</Text>
           <View style={[styles.insightCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
             <View style={styles.insightHeader}>
@@ -110,6 +155,40 @@ export default function AnalyticsScreen() {
             </TouchableOpacity>
           </View>
         </View>
+        {summaries.length>0 && (
+          <View style={[styles.section, centerW]}>
+            <Text style={[styles.sectionTitle,{color:colors.text}]}>Latest Summaries</Text>
+            {summaries.slice(0,3).map(s => (
+              <View key={s.id} style={[styles.reportsCard,{ backgroundColor: colors.surface, borderColor: colors.border }]}> 
+                <Text style={{ fontSize:12, color: colors.textSecondary, marginBottom:4 }}>Sample: {s.sampleSize}</Text>
+                <Text style={{ fontSize:14, color: colors.text }}>{s.text}</Text>
+              </View>
+            ))}
+          </View>
+        )}
+
+        {/* Live MoSPI Reports (scraped) */}
+  <View style={[styles.section, centerW]}>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>Latest Official Reports</Text>
+          <View style={[styles.reportsCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+            {reportsLoading && (
+              <View style={styles.centerRow}><ActivityIndicator color={colors.primary} /><Text style={[styles.loadingText,{color:colors.textSecondary}]}>  Fetching reports...</Text></View>
+            )}
+            {reportsError && <Text style={[styles.errorText,{color:'#dc2626'}]}>Failed: {reportsError}</Text>}
+            {!reportsLoading && !reportsError && reports.slice(0,8).map(r => (
+              <TouchableOpacity key={r.url} style={styles.reportRow} onPress={() => Linking.openURL(r.url)}>
+                <ExternalLink size={14} color={colors.primary} />
+                <Text style={[styles.reportTitle,{color:colors.primary}]} numberOfLines={2}>{r.title}</Text>
+              </TouchableOpacity>
+            ))}
+            <View style={styles.reportFooter}>
+              <Text style={[styles.reportMeta,{color:colors.textSecondary}]}>Total {reports.length} • Updated {fetchedAt?fetchedAt.toLocaleTimeString():''}</Text>
+              <TouchableOpacity onPress={() => Linking.openURL('https://mospi.gov.in/download-reports')}>
+                <Text style={[styles.reportLink,{color:colors.primary}]}>Open Portal</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -126,6 +205,7 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingBottom: 10,
   },
+  headerInner: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%' },
   headerTitle: {
     fontSize: 24,
     fontWeight: '700',
@@ -248,4 +328,23 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
+  reportsCard: {
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 1,
+    gap: 8,
+  },
+  reportRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingVertical: 4,
+  },
+  reportTitle: { flex: 1, fontSize: 12, fontWeight: '600' },
+  reportFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 },
+  reportMeta: { fontSize: 10 },
+  reportLink: { fontSize: 12, fontWeight: '600' },
+  loadingText: { fontSize: 12 },
+  centerRow: { flexDirection: 'row', alignItems: 'center' },
+  errorText: { fontSize: 12 },
 });

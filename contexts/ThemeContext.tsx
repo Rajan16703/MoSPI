@@ -21,26 +21,27 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 const lightColors = {
-  background: '#f8fafc',
+  background: '#f5f7fa',
   surface: '#ffffff',
-  primary: '#1e40af',
-  text: '#1f2937',
-  textSecondary: '#6b7280',
-  border: '#e5e7eb',
+  primary: '#1d4ed8',
+  text: '#1e293b',
+  textSecondary: '#64748b',
+  border: '#e2e8f0',
   card: '#ffffff',
   success: '#059669',
   warning: '#f59e0b',
   error: '#dc2626',
 };
 
+// Pitch-black dark theme (remove bluish tints, neutral monochrome + semantic accents)
 const darkColors = {
-  background: '#0f172a',
-  surface: '#1e293b',
-  primary: '#3b82f6',
-  text: '#f1f5f9',
-  textSecondary: '#94a3b8',
-  border: '#334155',
-  card: '#1e293b',
+  background: '#000000',
+  surface: '#070707',
+  primary: '#ffffff', // use white as primary accent in pure black mode
+  text: '#f5f5f5',
+  textSecondary: '#9ca3af',
+  border: '#1a1a1a',
+  card: '#0d0d0d',
   success: '#10b981',
   warning: '#f59e0b',
   error: '#ef4444',

@@ -1,0 +1,56 @@
+[
+  {
+    "id": "nss",
+    "title": "National Sample Survey (NSS)",
+    "category": "Household & Socio-Economic",
+    "description": "Large-scale household surveys covering consumption, employment, health, education and more across India.",
+    "officialUrl": "https://mospi.gov.in/",
+    "lastKnownCycle": "78th Round",
+    "lastUpdated": "2025-01-01"
+  },
+  {
+    "id": "asi",
+    "title": "Annual Survey of Industries (ASI)",
+    "category": "Industry",
+    "description": "Primary source of industrial statistics in India providing data on number of factories, employment, wages, output, input, depreciation, fixed assets, inventories, etc.",
+    "officialUrl": "https://mospi.gov.in/",
+    "lastKnownCycle": "2022-23",
+    "lastUpdated": "2025-01-01"
+  },
+  {
+    "id": "iip",
+    "title": "Index of Industrial Production (IIP)",
+    "category": "Industry Index",
+    "description": "Monthly indicator that reflects the changes in the volume of production of a basket of industrial products.",
+    "officialUrl": "https://mospi.gov.in/",
+    "frequency": "Monthly",
+    "lastUpdated": "2025-08-01"
+  },
+  {
+    "id": "cpi",
+    "title": "Consumer Price Index (CPI)",
+    "category": "Prices & Inflation",
+    "description": "Measures changes over time in the general level of prices of goods and services that households acquire for the purpose of consumption.",
+    "officialUrl": "https://mospi.gov.in/",
+    "frequency": "Monthly",
+    "lastUpdated": "2025-08-01"
+  },
+  {
+    "id": "wpi",
+    "title": "Wholesale Price Index (WPI)",
+    "category": "Prices & Inflation",
+    "description": "Represents the price changes in the wholesale market for a basket of goods.",
+    "officialUrl": "https://mospi.gov.in/",
+    "frequency": "Weekly/Monthly",
+    "lastUpdated": "2025-08-01"
+  },
+  {
+    "id": "economic-census",
+    "title": "Economic Census",
+    "category": "Enterprise & Establishments",
+    "description": "Enumeration of all entrepreneurial units in the country involved in any economic activity of either production or distribution of goods and services.",
+    "officialUrl": "https://mospi.gov.in/",
+    "lastKnownCycle": "7th Census",
+    "lastUpdated": "2025-01-01"
+  }
+]

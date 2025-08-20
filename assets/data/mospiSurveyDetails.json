@@ -1,0 +1,52 @@
+[
+  {
+    "id": "plfs",
+    "title": "Periodic Labour Force Survey (PLFS)",
+    "domain": "Employment & Unemployment",
+    "periodicity": "Annual & Quarterly / Monthly Indicators",
+    "description": "Collects data on key employment and unemployment indicators for urban and rural areas including LFPR, WPR, UR by usual and current weekly status.",
+    "keyIndicators": ["Labour Force Participation Rate", "Worker Population Ratio", "Unemployment Rate"],
+    "latestRelease": "June 2025 Monthly Bulletin",
+    "source": "https://mospi.gov.in/"
+  },
+  {
+    "id": "gdp-pe",
+    "title": "National Accounts Statistics (GDP Estimates)",
+    "domain": "National Accounts",
+    "periodicity": "Quarterly & Annual",
+    "description": "Provides provisional, quarterly and annual estimates of Gross Domestic Product and related aggregates across economic sectors (base year 2011-12).",
+    "keyIndicators": ["GDP at constant prices", "GDP growth rate", "Sectoral GVA"],
+    "latestRelease": "Provisional Estimates 2024-25 (Q4)",
+    "source": "https://mospi.gov.in/"
+  },
+  {
+    "id": "cms",
+    "title": "Comprehensive Modular Survey (CMS)",
+    "domain": "Multiple Modules",
+    "periodicity": "Modular / Rolling",
+    "description": "Integrated survey framework intended to streamline multiple thematic household surveys into coordinated modular waves.",
+    "keyIndicators": ["Consumption", "Health", "Education", "Employment"],
+    "latestRelease": "Telecom 2025 Module",
+    "source": "https://mospi.gov.in/"
+  },
+  {
+    "id": "sdg",
+    "title": "SDG Dashboard Data",
+    "domain": "Sustainable Development Goals",
+    "periodicity": "Varies by Indicator",
+    "description": "Collation of indicators aligned with the UN Sustainable Development Goals for India, including social, economic and environmental metrics.",
+    "keyIndicators": ["SDG 1 Poverty", "SDG 3 Health", "SDG 4 Education", "SDG 8 Economic Growth"],
+    "latestRelease": "Dashboard 2025 refresh",
+    "source": "https://sdgindia2030.mospi.gov.in/"
+  },
+  {
+    "id": "cpi-food",
+    "title": "Consumer Price Index - Food & Beverages",
+    "domain": "Prices",
+    "periodicity": "Monthly",
+    "description": "Price index tracking changes in the retail prices of food and beverage items forming part of the CPI basket.",
+    "keyIndicators": ["Food Inflation Rate"],
+    "latestRelease": "July 2025",
+    "source": "https://mospi.gov.in/"
+  }
+]
